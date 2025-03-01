@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // provider = "mysql"
+  // url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  username        String   @unique
+  password        String
+  email           String   @unique
+  online          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  lastUpdate      DateTime @default(now())
+  posts           Post[]
+
+  @@map("users")
+}
+
+model Post {
+  id              String    @id @default(uuid())
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String  
+  body            String
+  likes           Int       @default(0)
+  createdAt       DateTime  @default(now())
+  deletedAt       DateTime?
+}
